@@ -1,11 +1,11 @@
-# Cerberus: An RBAC Authorization, Access Control, and Authentication Service for Go gRPC
+# Cerberus: An RBAC Authorization, Access Control, and Authentication gRPC Service  
 
 ![image](https://github.com/alexbro4u/Cerberus/assets/91609830/aefd4ef0-548f-40b2-8cfa-a882fcafdad4)
 
 
 ## Introduction
 
-Cerberus is a powerful and flexible RBAC (Role-Based Access Control) authorization, access control, and authentication service for Go gRPC applications. It empowers you to seamlessly manage user access to resources, enforce granular permissions, and safeguard your APIs with robust authentication mechanisms.
+Cerberus is a powerful and flexible RBAC (Role-Based Access Control) authorization, access control, and authentication service. It empowers you to seamlessly manage user access to resources, enforce granular permissions, and safeguard your APIs with robust authentication mechanisms.
 
 ## Key Features
 
@@ -19,7 +19,7 @@ Cerberus is a powerful and flexible RBAC (Role-Based Access Control) authorizati
 
 * **High Performance and Scalability:** Built on Go and gRPC, Cerberus delivers exceptional performance and scalability to handle even the most demanding workloads.
 
-* **Ease of Use:** With its intuitive API and well-documented design, Cerberus is easy to integrate into your Go gRPC applications.
+* **Ease of Use:** With its intuitive API and well-documented design, Cerberus is easy to integrate into your applications.
 
 ## Use Cases
 
@@ -41,7 +41,7 @@ To embark on your journey with Cerberus, follow these simple steps:
 
 2. **Configuration:** Configure Cerberus according to your application's requirements, including authentication methods, role definitions, and access control rules.
 
-3. **Integration:** Integrate Cerberus into your Go gRPC application by utilizing its well-defined API to enforce authentication, authorization, and access control.
+3. **Integration:** Integrate Cerberus into your application by utilizing its well-defined API to enforce authentication, authorization, and access control.
 
 4. **Deployment:** Deploy your Cerberus-enabled application to your desired environment, ensuring secure and controlled access to your resources.
 
