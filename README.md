@@ -1,6 +1,7 @@
 # Cerberus: An RBAC Authorization, Access Control, and Authentication Service for Go gRPC
 
-[Image of Cerberus, the three-headed dog from Greek mythology guarding the entrance to the underworld]
+![image](https://github.com/alexbro4u/Cerberus/assets/91609830/aefd4ef0-548f-40b2-8cfa-a882fcafdad4)
+
 
 ## Introduction
 
