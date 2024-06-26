@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "alexbro4u.cerberus.v1;cerberusv1";
+
+service Auth {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+}
+
+message RegisterRequest {
+  string email = 1; // Email of the user to register
+  string password = 2; // Password of the user to register
+}
+
+message RegisterResponse {
+  int64 uid = 1; // Unique identifier of the user
+}
+
+message LoginRequest {
+  string email = 1; // Email of the user to login
+  string password = 2; // Password of the user to login
+  int32 app_id = 3; // Application identifier
+}
+
+message LoginResponse {
+  string token = 1; // Token to authenticate the user
+}
+
+message IsAdminRequest {
+  int64 uid = 1; // Unique identifier of the user to check
+}
+
+message IsAdminResponse {
+  bool is_admin = 1; // Whether the user is an admin
+}
+
