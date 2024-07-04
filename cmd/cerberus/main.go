@@ -1,10 +1,13 @@
 package main
 
 import (
-	"Cerberus/internal/config"
-	"Cerberus/internal/lib/logger/handlers/slogpretty"
+	"cerberus/internal/app"
+	"cerberus/internal/config"
+	"cerberus/internal/lib/logger/handlers/slogpretty"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 const (
@@ -20,6 +23,21 @@ func main() {
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting cerberus", slog.Any("config", cfg), slog.String("version", "1.0.0"))
+
+	application := app.New(log, cfg.GRPC.Port, cfg.Storage, cfg.TokenTTL)
+
+	go application.GRPCSrv.MustRun()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+
+	sign := <-stop
+
+	log.Info("received signal", slog.String("signal", sign.String()))
+
+	application.GRPCSrv.Stop()
+
+	log.Info("cerberus stopped")
 }
 
 func setupLogger(env string) *slog.Logger {

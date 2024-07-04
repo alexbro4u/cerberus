@@ -16,7 +16,7 @@ type Config struct {
 
 type GRPC struct {
 	Host         string        `yaml:"host" env-default:"localhost"`
-	Port         string        `yaml:"port" env-default:"8080"`
+	Port         int           `yaml:"port" env-default:"8080"`
 	ReadTimeout  time.Duration `yaml:"read_timeout" env-default:"4s"`
 	WriteTimeout time.Duration `yaml:"write_timeout" env-default:"4s"`
 }
