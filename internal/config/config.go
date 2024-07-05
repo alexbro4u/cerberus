@@ -46,3 +46,28 @@ func MustLoad() *Config {
 	}
 	return &cfg
 }
+
+type Migrator struct {
+	Storage         Storage `yaml:"storage"`
+	MigrationsPath  string  `yaml:"migrations_path" env-required:"true"`
+	MigrationsTable string  `yaml:"migrations_table" env-required:"true"`
+}
+
+func MustLoadMigrator() *Migrator {
+	configPath := os.Getenv("CONFIG_PATH_MIGRATOR")
+	if configPath == "" {
+		log.Fatal("CONFIG_PATH_MIGRATOR is not set")
+	}
+
+	// check config if the file exists
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalf("config file not found: %s", configPath)
+	}
+
+	var migrator Migrator
+
+	if err := cleanenv.ReadConfig(configPath, &migrator); err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+	return &migrator
+}
