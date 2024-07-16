@@ -4,14 +4,23 @@ import (
 	"cerberus/internal/config"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
 	cfg := config.MustLoadMigrator()
 
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s/%s?x-migrations-table=%s&sslmode=disable",
-		cfg.Storage.User, cfg.Storage.Password, cfg.Storage.Host, cfg.Storage.DbName, cfg.MigrationsTable)
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable&x-migrations-table=%s",
+		cfg.Storage.User,
+		cfg.Storage.Password,
+		cfg.Storage.Host,
+		cfg.Storage.DbName,
+		cfg.MigrationsTable,
+	)
 
 	migrationsPath := fmt.Sprintf("file://%s", cfg.MigrationsPath)
 
@@ -20,15 +29,17 @@ func main() {
 		dbURL,
 	)
 	if err != nil {
-		panic(err)
-	}
-	if err := m.Up(); err != nil {
-		if errors.Is(err, migrate.ErrNoChange) {
-			fmt.Println("No changes to migrate")
-			return
-		}
-		panic(err)
+		log.Fatalf("Failed to create migrate instance: %v\n", err)
 	}
 
-	fmt.Println("Migrations applied")
+	log.Println("Starting migration...")
+	if err := m.Up(); err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			log.Println("No changes to migrate")
+			return
+		}
+		log.Fatalf("Migration failed: %v\n", err)
+	}
+
+	log.Println("Migrations applied successfully")
 }
