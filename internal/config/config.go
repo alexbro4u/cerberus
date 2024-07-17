@@ -28,22 +28,24 @@ type Storage struct {
 	Host     string `yaml:"host" env-required:"true"`
 }
 
+func LoadConfig(configPath string, cfg interface{}) {
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalf("config file not found: %s", configPath)
+	}
+
+	if err := cleanenv.ReadConfig(configPath, cfg); err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+}
+
 func MustLoad() *Config {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
 		log.Fatal("CONFIG_PATH is not set")
 	}
 
-	// check config if the file exists
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalf("config file not found: %s", configPath)
-	}
-
 	var cfg Config
-
-	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
+	LoadConfig(configPath, &cfg)
 	return &cfg
 }
 
@@ -59,15 +61,7 @@ func MustLoadMigrator() *Migrator {
 		log.Fatal("CONFIG_PATH_MIGRATOR is not set")
 	}
 
-	// check config if the file exists
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalf("config file not found: %s", configPath)
-	}
-
 	var migrator Migrator
-
-	if err := cleanenv.ReadConfig(configPath, &migrator); err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
+	LoadConfig(configPath, &migrator)
 	return &migrator
 }

@@ -14,13 +14,15 @@ type App struct {
 	port       int
 }
 
+// New creates a new instance of the gRPC server
 func New(
 	log *slog.Logger,
+	authService authgrpc.Auth,
 	port int,
 ) *App {
 	gRPCServer := grpc.NewServer()
 
-	authgrpc.Register(gRPCServer)
+	authgrpc.Register(gRPCServer, authService)
 
 	return &App{
 		log:        log,
@@ -30,12 +32,14 @@ func New(
 
 }
 
+// MustRun runs the gRPC server and panics if an error occurs
 func (a *App) MustRun() {
 	if err := a.Run(); err != nil {
 		panic(err)
 	}
 }
 
+// Run runs the gRPC server
 func (a *App) Run() error {
 	const op = "grpcapp.Run"
 

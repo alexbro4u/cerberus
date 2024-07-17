@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"cerberus/internal/services/auth"
+	"cerberus/internal/storage"
 	"context"
 	cerberusv1 "github.com/alexbro4u/contracts/gen/go/cerberus"
+	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -37,8 +40,8 @@ type serverApi struct {
 	auth Auth
 }
 
-func Register(gRPC *grpc.Server) {
-	cerberusv1.RegisterAuthServer(gRPC, &serverApi{})
+func Register(gRPC *grpc.Server, auth Auth) {
+	cerberusv1.RegisterAuthServer(gRPC, &serverApi{auth: auth})
 }
 
 func (s *serverApi) Login(
@@ -52,8 +55,10 @@ func (s *serverApi) Login(
 
 	token, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), int(req.GetAppId()))
 	if err != nil {
-		//TODO ...
-		return nil, status.Error(codes.Internal, "internal error")
+		if errors.Is(err, auth.ErrInvalidCredentials) {
+			return nil, status.Error(codes.InvalidArgument, "invalid email or password")
+		}
+		return nil, status.Error(codes.Internal, "failed to login")
 	}
 
 	return &cerberusv1.LoginResponse{
@@ -72,7 +77,9 @@ func (s *serverApi) Register(
 
 	userID, err := s.auth.RegisterNewUser(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
-		//TODO ...
+		if errors.Is(err, auth.ErrUserExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
@@ -92,7 +99,9 @@ func (s *serverApi) IsAdmin(
 
 	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUid())
 	if err != nil {
-		//TODO ...
+		if errors.Is(err, storage.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
