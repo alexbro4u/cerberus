@@ -78,19 +78,17 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (
                     (email, password_hash) 
                 VALUES
                     ($1, $2)
+                RETURNING id
             `)
 			if err != nil {
 				return 0, fmt.Errorf("%s: %w", op, err)
 			}
 
-			err = stmt.QueryRowContext(
-				ctx,
-				email,
-				passHash,
-			).Scan(&id)
+			err = stmt.QueryRowContext(ctx, email, passHash).Scan(&id)
 			if err != nil {
 				return 0, fmt.Errorf("%s: %w", op, err)
 			}
+
 			return id, nil
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
@@ -118,7 +116,7 @@ func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 		return models.User{}, fmt.Errorf("%s: %w", op, err)
 	}
 	var user models.User
-	err = stmt.QueryRowContext(ctx, email).Scan(&user.ID, &user.PassHash)
+	err = stmt.QueryRowContext(ctx, email).Scan(&user.ID, &user.Email, &user.PassHash)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return models.User{}, fmt.Errorf("%s: %w", op, storage.ErrUserNotFound)

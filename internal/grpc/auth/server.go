@@ -120,7 +120,7 @@ func validateLoginReq(req *cerberusv1.LoginRequest) error {
 		return status.Error(codes.InvalidArgument, "email is required")
 	}
 
-	if isValidEmail(req.GetEmail()) {
+	if !isValidEmail(req.GetEmail()) {
 		return status.Error(codes.InvalidArgument, "invalid email")
 	}
 
@@ -140,7 +140,7 @@ func validateRegisterReq(req *cerberusv1.RegisterRequest) error {
 		return status.Error(codes.InvalidArgument, "email is required")
 	}
 
-	if isValidEmail(req.GetEmail()) {
+	if !isValidEmail(req.GetEmail()) {
 		return status.Error(codes.InvalidArgument, "invalid email")
 	}
 

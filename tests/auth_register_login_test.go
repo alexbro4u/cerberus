@@ -46,12 +46,12 @@ func TestRegisterLogin_Login_HappyPath(t *testing.T) {
 	token := respLogin.GetToken()
 	assert.NotEmpty(t, token)
 
-	tokenParced, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	tokenParsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(appSecret), nil
 	})
 	require.NoError(t, err)
 
-	claims, ok := tokenParced.Claims.(jwt.MapClaims)
+	claims, ok := tokenParsed.Claims.(jwt.MapClaims)
 	assert.True(t, ok)
 
 	assert.Equal(t, respReg.GetUid(), int64(claims["uid"].(float64)))
