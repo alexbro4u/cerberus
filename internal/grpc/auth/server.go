@@ -2,7 +2,6 @@ package auth
 
 import (
 	"cerberus/internal/services/auth"
-	"cerberus/internal/storage"
 	"context"
 	cerberusv1 "github.com/alexbro4u/contracts/gen/go/cerberus"
 	"github.com/pkg/errors"
@@ -99,7 +98,7 @@ func (s *serverApi) IsAdmin(
 
 	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUid())
 	if err != nil {
-		if errors.Is(err, storage.ErrUserNotFound) {
+		if errors.Is(err, auth.ErrUserNotFound) {
 			return nil, status.Error(codes.NotFound, "user not found")
 		}
 		return nil, status.Error(codes.Internal, "internal error")

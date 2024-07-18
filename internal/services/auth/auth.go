@@ -48,6 +48,9 @@ var (
 
 	// ErrUserExists is returned when the user with the provided email already exists
 	ErrUserExists = errors.New("user already exists")
+
+	// ErrUserNotFound is returned when the user with the provided email is not found
+	ErrUserNotFound = errors.New("user not found")
 )
 
 // New creates a new instance of the Auth service
