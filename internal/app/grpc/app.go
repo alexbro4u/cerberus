@@ -4,6 +4,7 @@ import (
 	authgrpc "cerberus/internal/grpc/auth"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log/slog"
 	"net"
 )
@@ -21,6 +22,8 @@ func New(
 	port int,
 ) *App {
 	gRPCServer := grpc.NewServer()
+
+	reflection.Register(gRPCServer)
 
 	authgrpc.Register(gRPCServer, authService)
 
